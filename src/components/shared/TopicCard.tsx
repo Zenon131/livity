@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from "../ui/button";
 
@@ -8,7 +7,7 @@ type TopicCardProps = {
 
 const TopicCard = ({ topic }: TopicCardProps) => {
   return (
-    <Link to={`/explore`} className="user-card">
+    <Link to={`/?topic=${encodeURIComponent(topic.name.toLowerCase())}`} className="user-card">
       <div className="flex-center flex-col gap-1">
         <p className="base-medium text-light-1 text-center line-clamp-1">
           {topic.name}

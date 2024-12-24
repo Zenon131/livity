@@ -44,14 +44,17 @@ const Home = () => {
   const searchParams = new URLSearchParams(location.search);
   const topicParam = searchParams.get('topic');
 
+  const { data: posts, isLoading: isPostLoading } = useGetRecentPosts(
+    selectedTopic || topicParam || '',
+    selectedLocation
+  );
+  const { data: popularTopics, isLoading: isTopicsLoading } = useGetPopularTopics();
+
   useEffect(() => {
     if (topicParam) {
       setSelectedTopic(topicParam);
     }
   }, [topicParam]);
-
-  const { data: posts, isPending: isPostLoading } = useGetRecentPosts(selectedTopic, selectedLocation)
-  const { data: popularTopics, isPending: isTopicLoading } = useGetPopularTopics()
 
   function LocationList() {
     return (
@@ -219,7 +222,7 @@ const Home = () => {
           <h3 className="h3-bold text-light-1">Hot Topics</h3>
           <img src='/assets/icons/!.svg' alt='popular' height={36} width={36}/>
         </div>
-        {isTopicLoading && !popularTopics ? (
+        {isTopicsLoading && !popularTopics ? (
           <Loader />
         ) : (
           <ul className="grid 2xl:grid-cols-2 gap-6">
