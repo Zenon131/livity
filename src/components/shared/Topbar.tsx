@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { useLogoutAccMutation } from '@/lib/react-query/queriesAndMutations';
+// import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+// import { Button } from '../ui/button';
+// import { useLogoutAccMutation } from '@/lib/react-query/queriesAndMutations';
 import { useUserContext } from '@/context/authContext';
 
 
 const Topbar = () => {
-    const { mutate: logout, isSuccess } = useLogoutAccMutation();
+    // const { mutate: logout, isSuccess } = useLogoutAccMutation();
     const { user } = useUserContext();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     
     // const [currentUser, setCurrentUser] = useState(null);
 
@@ -20,11 +20,11 @@ const Topbar = () => {
     //     fetchCurrentUser();
     // }, []);
 
-    useEffect(() => {
-        if (isSuccess) {
-            navigate('/login'); // Navigate to login page or another route after logout
-        }
-    }, [isSuccess, navigate]);
+    // useEffect(() => {
+    //     if (isSuccess) {
+    //         navigate('/login'); // Navigate to login page or another route after logout
+    //     }
+    // }, [isSuccess, navigate]);
 
     return (
         <section className="topbar">

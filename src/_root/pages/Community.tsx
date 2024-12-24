@@ -4,14 +4,14 @@ import { ICommunity, IThread } from '@/types/index';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { Textarea } from '@/components/ui/textarea';
-import { useUserContext } from '@/context/authContext';
+// import { useUserContext } from '@/context/authContext';
 
 
 const Community = () => {
   const { id } = useParams();
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
   const { toast } = useToast();
-  const [community, setCommunity] = useState<ICommunity | null>(null);
+  const [community] = useState<ICommunity | null>(null);
   const [newThread, setNewThread] = useState('');
   const [loading, setLoading] = useState(true);
 

@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import Loader from '@/components/shared/Loader';
+// import Loader from '@/components/shared/Loader';
 
 const topics = [
   { value: "politics", label: "Politics", description: "Discuss current political events and policies" },

@@ -3,15 +3,15 @@ import { useUserContext } from '@/context/authContext'
 import { useLogoutAccMutation } from '@/lib/react-query/queriesAndMutations'
 import { INavLink  } from '@/types'
 import  { useEffect } from 'react'
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Button } from '../ui/button'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+// import { Button } from '../ui/button'
 // import { getCurrentUser } from '@/lib/appwrite/api'
 
 const LeftSidebar = () => {
-    const { mutate: logout, isSuccess } = useLogoutAccMutation()
+    // const { mutate: logout, isSuccess } = useLogoutAccMutation()
     const { user } = useUserContext()
     const { pathname } = useLocation()
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
 
     // const [currentUser, setCurrentUser] = useState<IUser | null>(null)
@@ -25,11 +25,11 @@ const LeftSidebar = () => {
     //     fetchCurrentUser()
     // }, [])
 
-    useEffect(() => {
-        if (isSuccess) {
-            navigate('/login')  // Redirect to login page or wherever is appropriate after logout
-        }
-    }, [isSuccess, navigate])
+    // useEffect(() => {
+    //     if (isSuccess) {
+    //         navigate('/login')  // Redirect to login page or wherever is appropriate after logout
+    //     }
+    // }, [isSuccess, navigate])
 
     return (
         <nav className='leftsidebar'>

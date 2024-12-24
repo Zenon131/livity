@@ -6,11 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { Switch } from '@/components/ui/switch';
-import { useUserContext } from '@/context/authContext';
+// import { useUserContext } from '@/context/authContext';
 
 const CreateCommunity = () => {
   const navigate = useNavigate();
-  const { user } = useUserContext();
+//   const { user } = useUserContext();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
