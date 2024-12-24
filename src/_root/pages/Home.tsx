@@ -6,7 +6,7 @@ import PostCard from '@/components/shared/PostCard'
 import TopicCard from '@/components/shared/TopicCard'
 import { useGetRecentPosts, useGetPopularTopics } from '@/lib/react-query/queriesAndMutations'
 import { Models } from 'appwrite'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,29 +28,28 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { locations } from '@/constants/locations'
+import { topics } from '@/constants/topics'
+import { useLocation } from 'react-router-dom';
 
-const topics = [
-  { value: "politics", label: "Politics" },
-  { value: "technology", label: "Technology" },
-  { value: "sports", label: "Sports" },
-  { value: "entertainment", label: "Entertainment" },
-  { value: "food", label: "Food" },
-  { value: "travel", label: "Travel" },
-  { value: "music", label: "Music" },
-  { value: "art", label: "Art" },
-  { value: "science", label: "Science" },
-  { value: "health", label: "Health" },
-  { value: "education", label: "Education" },
-  { value: "business", label: "Business" }
-]
 
 const Home = () => {
   const [selectedTopic, setSelectedTopic] = useState('')
   const [selectedLocation, setSelectedLocation] = useState('')
   const [openLocation, setOpenLocation] = useState(false)
   const [openTopic, setOpenTopic] = useState(false)
-  
   const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  // Get topic from URL parameter
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const topicParam = searchParams.get('topic');
+
+  useEffect(() => {
+    if (topicParam) {
+      setSelectedTopic(topicParam);
+    }
+  }, [topicParam]);
+
   const { data: posts, isPending: isPostLoading } = useGetRecentPosts(selectedTopic, selectedLocation)
   const { data: popularTopics, isPending: isTopicLoading } = useGetPopularTopics()
 
@@ -175,7 +174,7 @@ const Home = () => {
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="w-full justify-start shad-input">
                         {selectedLocation ? 
-                          locations.find(l => l.value === selectedLocation)?.label 
+                          locations.find(t => t.value === selectedLocation)?.label 
                           : "All Locations"}
                       </Button>
                     </PopoverTrigger>
@@ -188,7 +187,7 @@ const Home = () => {
                     <DrawerTrigger asChild>
                       <Button variant="outline" className="w-full justify-start shad-input">
                         {selectedLocation ? 
-                          locations.find(l => l.value === selectedLocation)?.label 
+                          locations.find(t => t.value === selectedLocation)?.label 
                           : "All Locations"}
                       </Button>
                     </DrawerTrigger>

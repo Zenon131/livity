@@ -33,9 +33,9 @@ const Topbar = () => {
                     <img src="/assets/images/bashmnt2.svg" alt="Bashmnt Logo" width={120} height={220} />
                 </Link>
                 <div className="flex gap-4">
-                    <Button variant="ghost" className="shad-button_ghost" onClick={() => logout()}>
+                    {/* <Button variant="ghost" className="shad-button_ghost" onClick={() => logout()}>
                         <img src="/assets/icons/box-arrow-left.svg" className="invert-white" width={24} alt="logout" />
-                    </Button>
+                    </Button> */}
                     {user && (
                         <Link to={`/profile/${user.id}`} className="flex-center gap-3">
                             <img

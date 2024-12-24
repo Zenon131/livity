@@ -1,11 +1,11 @@
 export const sidebarLinks = [
     {
-      imgURL: "/assets/icons/house (1).svg",
+      imgURL: "/assets/icons/HomeCust.svg",
       route: "/",
       label: "Home",
     },
     {
-      imgURL: "/assets/icons/compass.svg",
+      imgURL: "/assets/icons/SearchCust.svg",
       route: "/explore",
       label: "Explore",
     },
@@ -20,37 +20,48 @@ export const sidebarLinks = [
     //   label: "Create Community",
     // },
     {
-      imgURL: "/assets/icons/stars.svg",
+      imgURL: "/assets/icons/HarmonyCust.svg",
       route: "/harmony",
       label: "Harmony",
     },
     {
-      imgURL: "/assets/icons/pencil-square.svg",
+      imgURL: "/assets/icons/Create PostCust.svg",
       route: "/create-post",
       label: "Create Post",
     },
+    {
+      imgURL: "/assets/icons/!.svg",
+      route: "/topics",
+      label: "Topics",
+    },
   ];
+  
   
   export const bottombarLinks = [
     {
-      imgURL: "/assets/icons/house (1).svg",
+      imgURL: "/assets/icons/HomeCust.svg",
       route: "/",
       label: "Home",
     },
     {
-      imgURL: "/assets/icons/plus-lg.svg",
-      route: "/create-post",
-      label: "Create Post",
-    },
-    {
-      imgURL: "/assets/icons/compass.svg",
+      imgURL: "/assets/icons/SearchCust.svg",
       route: "/explore",
       label: "Explore",
     },
     {
-      imgURL: "/assets/icons/stars.svg",
+      imgURL: "/assets/icons/Create PostCust.svg",
+      route: "/create-post",
+      label: "Create Post",
+    },
+    {
+      imgURL: "/assets/icons/HarmonyCust.svg",
       route: "/harmony",
       label: "Harmony",
+    },
+    {
+      imgURL: "/assets/icons/!.svg",
+      route: "/topics",
+      label: "Topics",
     },
     // {
     //   imgURL: "/assets/icons/diagram-2-fill.svg",

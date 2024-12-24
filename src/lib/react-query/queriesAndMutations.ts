@@ -3,7 +3,7 @@ import {
     useMutation,
     useQueryClient,
   } from '@tanstack/react-query'
-import { createComment, createPost, createUserAccount, getChildPostCount, getPostById, getPostByParent, getUserById, loginAccount, logoutAccount, searchPosts, updateUser } from '../appwrite/api'
+import { createComment, createPost, createUserAccount, getChildPostCount, getPostById, getPostByParent, getRecentPosts, getUserById, loginAccount, logoutAccount, searchPosts, updateUser } from '../appwrite/api'
 import { INewComment, INewPost, INewUser, IUpdateUser } from '@/types'
 import { QUERY_KEYS } from './queryKeys'
 import { appwriteConfig, databases } from '../appwrite/config'

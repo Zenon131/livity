@@ -142,15 +142,14 @@ const Profile = () => {
                 className="h-12 bg-dark-4 px-5 text-light-1 flex-center gap-2 rounded-lg"
               >
                 <img
-                  src="/assets/icons/pencil-square.svg"
+                  src="/assets/icons/Edit Profile.svg"
                   alt="edit"
-                  width={20}
-                  height={20}
-                  className="invert"
+                  width={24}
+                  height={24}
                 />
-                <p className="flex whitespace-nowrap small-medium">
+                {/* <p className="flex whitespace-nowrap small-medium">
                   Edit Profile
-                </p>
+                </p> */}
               </Link>
             ) : null}
           </div>
@@ -165,11 +164,10 @@ const Profile = () => {
           }`}
         >
           <img
-            src="/assets/icons/postcard.svg"
+            src="/assets/icons/Create PostCust.svg"
             alt="posts"
             width={20}
             height={20}
-            className="invert"
           />
           Posts
         </Link>

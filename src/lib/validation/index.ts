@@ -30,4 +30,25 @@ export const CommentValidation = z.object({
 export const ProfileValidation = z.object({
   username: z.string().min(1, "Username is required"),
   file: z.custom<File[]>(),
-})
+  currentPassword: z.string().optional(),
+  newPassword: z.string().optional(),
+  confirmNewPassword: z.string().optional()
+}).refine((data) => {
+  // Only validate passwords if user is trying to change password
+  if (data.newPassword || data.confirmNewPassword || data.currentPassword) {
+    if (!data.currentPassword || data.currentPassword.length < 6) {
+      return false;
+    }
+    if (!data.newPassword || data.newPassword.length < 6) {
+      return false;
+    }
+    if (!data.confirmNewPassword || data.confirmNewPassword !== data.newPassword) {
+      return false;
+    }
+    return true;
+  }
+  return true;
+}, {
+  message: "Invalid password update. Please check all password fields.",
+  path: ["newPassword"],
+});

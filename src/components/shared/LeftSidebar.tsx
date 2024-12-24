@@ -41,9 +41,9 @@ const LeftSidebar = () => {
                     {sidebarLinks.map((link: INavLink) => {
                         const isActive = pathname === link.route
                         return (
-                            <li key={link.label} className={`leftsidebar-link ${isActive && 'bg-primary-500'}`}>
+                            <li key={link.label} className={`leftsidebar-link group ${isActive && 'bg-primary-500'}`}>
                                 <NavLink to={link.route} className='flex gap-4 items-center p-6'>
-                                    <img src={link.imgURL} className='invert' alt={link.label} width={24} height={24}/>
+                                    <img src={link.imgURL} className={`${isActive ? 'invert' : 'group-hover:invert'} transition-all duration-300`} alt={link.label} width={24} height={24}/>
                                     {link.label}
                                 </NavLink>
                             </li>
@@ -61,10 +61,10 @@ const LeftSidebar = () => {
                             </div>
                         </Link>
                     )}
-                <Button variant='ghost' className='shad-button_ghost' onClick={() => logout()}>
-                    <img className='invert-white' src='/assets/icons/box-arrow-left.svg' alt='logout' width={24} height={24}/>
+                {/* <Button variant='ghost' className='shad-button_ghost' onClick={() => logout()}>
+                    <img src='/assets/icons/Logout.svg' alt='logout' width={48} height={48}/>
                     <p className='small-medium lg:base-medium'>Logout</p>
-                </Button>
+                </Button> */}
             </div>
         </nav>
     )

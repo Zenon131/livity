@@ -20,6 +20,8 @@ export type INavLink = {
     imgid: string;
     imgurl: URL | string;
     file: File[];
+    currentPassword?: string;
+    newPassword?: string;
     // location: string;
   };
   

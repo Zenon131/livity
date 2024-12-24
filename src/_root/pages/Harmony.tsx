@@ -32,9 +32,10 @@ const Harmony = () => {
     <div className="flex flex-1">
       <div className="common-container">
         <div className="max-w-5xl flex-start gap-3 justify-start w-full">
-          <img className="invert-white" src="/assets/icons/stars.svg" width={36} height={36} alt="latest" />
-          <h2 className="h3-bold md:h2-bold w-full">Vibes</h2>
+          <img src="/assets/icons/HarmonyCust.svg" width={36} height={36} alt="harmony" />
+          <h2 className="h3-bold md:h2-bold w-full">Harmony</h2>
         </div>
+        <p className="text-light-2 base-regular">Harmony provides summaries of what users are discussing on Bashmnt by topic. Please note that it can make mistakes. More features coming soon!</p>
         <div className="topic-summaries mt-8">
           {isTopicLoading ? (
             <p>Loading topic...</p>

@@ -41,26 +41,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { locations } from "@/constants/locations"
+import { topics } from "@/constants/topics" 
 
 type PostFormProps = {
   post?: Models.Document
 }
 
-// Common topics that users can choose from
-const topics = [
-  { value: "politics", label: "Politics" },
-  { value: "technology", label: "Technology" },
-  { value: "sports", label: "Sports" },
-  { value: "entertainment", label: "Entertainment" },
-  { value: "food", label: "Food" },
-  { value: "travel", label: "Travel" },
-  { value: "music", label: "Music" },
-  { value: "art", label: "Art" },
-  { value: "science", label: "Science" },
-  { value: "health", label: "Health" },
-  { value: "education", label: "Education" },
-  { value: "business", label: "Business" }
-]
+
 
 const PostForm = ({ post }: PostFormProps) => {
   const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost()
@@ -264,10 +251,12 @@ const PostForm = ({ post }: PostFormProps) => {
 
         <div className="flex gap-4">
           <Button type="button" className="shad-button_dark_4" onClick={() => navigate(-1)}>
-            Cancel
+          <img src='assets/icons/x.svg' className="invert-white" width={24} alt='cancel-post'/>
           </Button>
           <Button type="submit" className="shad-button_primary">
-            {isLoadingCreate ? <Loader /> : "Post"}
+            {isLoadingCreate ? <Loader /> : 
+            <img src='assets/icons/arrow.svg' className="invert-white" width={24} alt='upload-post'/>
+            }
           </Button>
         </div>
       </form>
