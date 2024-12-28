@@ -29,6 +29,14 @@ const UpdateProfile = () => {
   const { user, setUser } = useUserContext();
   const { mutate: logout } = useLogoutAccMutation();
 
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate('/login');
+      }
+    });
+  };
+
   // Update the default values to only include username and file (profile picture)
   const form = useForm<z.infer<typeof ProfileValidation>>({
     resolver: zodResolver(ProfileValidation),
@@ -92,7 +100,7 @@ const UpdateProfile = () => {
             alt="edit"
           />
           <h2 className="h3-bold md:h2-bold text-left w-full">Settings</h2>
-          <Button variant='ghost' className='shad-button_ghost' onClick={() => logout()}>
+          <Button variant='ghost' className='shad-button_ghost' onClick={handleLogout}>
             <img src='/assets/icons/Logout.svg' alt='logout' width={48} height={48}/>
             <p className='small-medium lg:base-medium'>Logout</p>
           </Button>

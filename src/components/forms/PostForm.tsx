@@ -250,13 +250,13 @@ const PostForm = ({ post }: PostFormProps) => {
         />
 
         <div className="flex gap-4">
-          <Button type="button" className="shad-button_dark_4" onClick={() => navigate(-1)}>
-          <img src='assets/icons/x.svg' className="invert-white" width={24} alt='cancel-post'/>
-          </Button>
-          <Button type="submit" className="shad-button_primary">
+        <Button type="submit" className="shad-button_primary">
             {isLoadingCreate ? <Loader /> : 
             <img src='assets/icons/arrow.svg' className="invert-white" width={24} alt='upload-post'/>
             }
+          </Button>
+          <Button type="button" className="shad-button_dark_4" onClick={() => navigate(-1)}>
+          <img src='assets/icons/x.svg' className="invert-white" width={24} alt='cancel-post'/>
           </Button>
         </div>
       </form>
