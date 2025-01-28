@@ -19,7 +19,7 @@ const Explore = () => {
           <img src='/assets/icons/SearchCust.svg' alt='search' height={24} width={24} />
           <Input 
             type='text' 
-            placeholder='Search by location, topic, or content'
+            placeholder='Search...'
             className='explore-search' 
             value={searchVal} 
             onChange={onChange}

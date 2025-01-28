@@ -30,7 +30,7 @@ const Topbar = () => {
         <section className="topbar">
             <div className="flex-between py-4 px-5">
                 <Link to="/" className="flex gap-3 items-center" title="Go to Home">
-                    <img src="/assets/images/bashmnt2.svg" alt="Bashmnt Logo" width={120} height={220} />
+                    <img src="/assets/icons/Fortress.svg" alt="Tether Logo" width={50} height={12} />
                 </Link>
                 <div className="flex gap-4">
                     {/* <Button variant="ghost" className="shad-button_ghost" onClick={() => logout()}>

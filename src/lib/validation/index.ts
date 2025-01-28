@@ -16,9 +16,8 @@ export const LoginValidation = z.object({
 })
 
 export const PostValidation = z.object({
-  topic: z.string().min(1, "Topic is required").max(100, "Too many characters"),
   content: z.string().min(1, "Content is required").max(150, "Too many characters"),
-  location: z.string().min(1, "Location is required").max(100, "Too many characters")
+  article: z.string().url("Must be a valid URL").optional().or(z.literal('')),
 })
 
 export const CommentValidation = z.object({

@@ -19,6 +19,8 @@ export const QUERY_KEYS = {
   
     //  SEARCH KEYS
     SEARCH_POSTS: "getSearchPosts",
+    TOP_NEWS: 'TOP_NEWS',
+    SEARCH_NEWS: 'SEARCH_NEWS',
   
     // CHAT KEYS
     GET_CHAT_ROOMS: 'getChatRooms',

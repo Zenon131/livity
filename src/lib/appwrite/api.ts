@@ -122,32 +122,113 @@ export async function logoutAccount() {
 
 export async function createPost(post: INewPost) {
     try {
+        // Generate topic based on content
+        const topic = await generateTopicFromContent(post.content);
+
         const newPost = await databases.createDocument(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
             ID.unique(),
             {
-                creator: post.userId, // Ensure this matches the relationship field in your schema
+                creator: post.userId,
                 userId: post.userId,
                 content: post.content,
-                location: post.location,
-                topic: post.topic,
-                parentId: post.parentId || null, // Add parent_post for threading if needed
+                topic: topic,
+                parentId: post.parentId,
+                article: post.article || '',
             }
         );
 
+        if (!newPost) throw Error;
 
         return newPost;
-    } catch (err: any) {
-        if (err.message.includes("Invalid document structure")) {
-            console.error("Error: Missing required fields in the post data", err);
-        } else {
-            console.error("Error creating post:", err);
-        }
-        return null;
+    } catch (error) {
+        console.log(error);
     }
 }
 
+async function generateTopicFromContent(content: string, title?: string): Promise<string> {
+    // Clean the input text
+    const cleanText = (text: string) => text.toLowerCase().replace(/[^\w\s]/g, '');
+    const cleanContent = cleanText(content);
+    const cleanTitle = title ? cleanText(title) : '';
+    
+    // Define common topics based on keywords with categories
+    const topicKeywords: { [key: string]: { primary: string[], secondary: string[] } } = {
+        'Technology': {
+            primary: ['code', 'programming', 'software', 'tech', 'computer', 'developer'],
+            secondary: ['app', 'web', 'digital', 'online', 'internet', 'mobile']
+        },
+        'Career': {
+            primary: ['job', 'career', 'hiring', 'salary', 'interview'],
+            secondary: ['work', 'resume', 'professional', 'skills', 'experience']
+        },
+        'Education': {
+            primary: ['learning', 'study', 'school', 'university', 'course'],
+            secondary: ['teach', 'student', 'education', 'knowledge', 'academic']
+        },
+        'Lifestyle': {
+            primary: ['health', 'fitness', 'food', 'travel', 'life'],
+            secondary: ['hobby', 'family', 'home', 'personal', 'wellness']
+        },
+        'Entertainment': {
+            primary: ['movie', 'music', 'game', 'show', 'art'],
+            secondary: ['book', 'sport', 'fun', 'play', 'watch']
+        },
+        'Business': {
+            primary: ['startup', 'business', 'entrepreneur', 'company'],
+            secondary: ['market', 'product', 'service', 'industry', 'client']
+        },
+        'Social': {
+            primary: ['community', 'social', 'friend', 'network'],
+            secondary: ['relationship', 'people', 'group', 'connect', 'share']
+        },
+        'News': {
+            primary: ['news', 'announcement', 'update', 'launch'],
+            secondary: ['event', 'release', 'latest', 'current', 'today']
+        },
+        'Question': {
+            primary: ['help', 'question', 'how', 'what', 'why'],
+            secondary: ['when', 'where', 'need', 'advice', 'solution']
+        },
+        'Discussion': {
+            primary: ['discuss', 'opinion', 'thought', 'debate'],
+            secondary: ['perspective', 'view', 'idea', 'feedback', 'comment']
+        }
+    };
+
+    // Calculate topic scores with weights
+    const topicScores = Object.entries(topicKeywords).reduce((scores, [topic, { primary, secondary }]) => {
+        let score = 0;
+        
+        // Title matches (higher weight)
+        if (cleanTitle) {
+            primary.forEach(keyword => {
+                if (cleanTitle.includes(keyword)) score += 3; // Primary keywords in title
+            });
+            secondary.forEach(keyword => {
+                if (cleanTitle.includes(keyword)) score += 1.5; // Secondary keywords in title
+            });
+        }
+        
+        // Content matches
+        primary.forEach(keyword => {
+            if (cleanContent.includes(keyword)) score += 2; // Primary keywords in content
+        });
+        secondary.forEach(keyword => {
+            if (cleanContent.includes(keyword)) score += 1; // Secondary keywords in content
+        });
+        
+        return { ...scores, [topic]: score };
+    }, {} as { [key: string]: number });
+
+    // Find the topic with the highest score
+    const [bestTopic] = Object.entries(topicScores).reduce(([maxTopic, maxScore], [topic, score]) => {
+        return score > maxScore ? [topic, score] : [maxTopic, maxScore];
+    }, ['General', 0]);
+
+    return bestTopic;
+}
 
 export async function getRecentPosts() {
     const posts = await databases.listDocuments(
@@ -448,6 +529,47 @@ export async function getUserById(userId: string) {
   export const extractContentFromPosts = (posts: any[]) => {
     return posts.map(post => post.content).join(' ');
   }
+
+// ============================== GET FILE URL
+export async function shareArticle(userId: string, article: {
+  title: string;
+  description: string;
+  url: string;
+  urlToImage?: string;
+  publishedAt: string;
+  source?: {
+    name: string;
+  };
+}) {
+  try {
+    const user = await getUserById(userId);
+    if (!user) throw Error("User not found");
+
+    const sharedArticles = user.sharedArticles || [];
+    
+    // Check if article is already shared
+    if (sharedArticles.some((a: { url: string }) => a.url === article.url)) {
+      throw Error("Article already shared");
+    }
+
+    // Update user's shared articles
+    const updatedUser = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      userId,
+      {
+        sharedArticles: [...sharedArticles, article]
+      }
+    );
+
+    if (!updatedUser) throw Error("Failed to share article");
+
+    return updatedUser;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
 // ============================== CHAT ROOMS ==============================
 export async function getChatRooms() {

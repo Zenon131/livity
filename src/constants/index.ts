@@ -9,30 +9,20 @@ export const sidebarLinks = [
       route: "/explore",
       label: "Explore",
     },
-    // {
-    //   imgURL: "/assets/icons/people.svg",
-    //   route: "/all-users",
-    //   label: "People",
-    // },
-    // {
-    //   imgURL: "/assets/icons/diagram-2-fill.svg",
-    //   route: "/create-community",
-    //   label: "Create Community",
-    // },
-    {
-      imgURL: "/assets/icons/HarmonyCust.svg",
-      route: "/harmony",
-      label: "Harmony",
-    },
     {
       imgURL: "/assets/icons/Create PostCust.svg",
       route: "/create-post",
       label: "Create Post",
     },
     {
-      imgURL: "/assets/icons/!.svg",
-      route: "/topics",
-      label: "Topics",
+      imgURL: "/assets/icons/HarmonyCust.svg",
+      route: "/harmony",
+      label: "Harmony",
+    },
+    {
+      imgURL: "/assets/icons/settings.svg",
+      route: "/update-profile",
+      label: "Settings",
     },
   ];
   
@@ -57,11 +47,6 @@ export const sidebarLinks = [
       imgURL: "/assets/icons/HarmonyCust.svg",
       route: "/harmony",
       label: "Harmony",
-    },
-    {
-      imgURL: "/assets/icons/!.svg",
-      route: "/topics",
-      label: "Topics",
     },
     // {
     //   imgURL: "/assets/icons/diagram-2-fill.svg",

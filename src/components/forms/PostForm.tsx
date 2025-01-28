@@ -20,56 +20,55 @@ import { useToast } from "../ui/use-toast"
 import { useNavigate } from "react-router-dom"
 import { useCreatePost } from "@/lib/react-query/queriesAndMutations"
 import Loader from "../shared/Loader"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { useState } from "react"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { locations } from "@/constants/locations"
-import { topics } from "@/constants/topics" 
+// import { useMediaQuery } from "@/hooks/use-media-query"
+// import { useState } from "react"
+// import {
+//   Command,
+//   CommandEmpty,
+//   CommandGroup,
+//   CommandInput,
+//   CommandItem,
+//   CommandList,
+// } from "@/components/ui/command"
+// import {
+//   Drawer,
+//   DrawerContent,
+//   DrawerTrigger,
+// } from "@/components/ui/drawer"
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover"
+// import { locations } from "@/constants/locations"
+// import { topics } from "@/constants/topics"
+import { Input } from "../ui/input"
+import { useLocation } from "react-router-dom"
 
 type PostFormProps = {
   post?: Models.Document
 }
-
-
 
 const PostForm = ({ post }: PostFormProps) => {
   const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost()
   const { user } = useUserContext()
   const { toast } = useToast()
   const navigate = useNavigate()
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const articleUrl = searchParams.get('article')
+  // const topicParam = searchParams.get('topic')
+  // const locationParam = searchParams.get('location')
 
-  const [openLocation, setOpenLocation] = useState(false)
-  const [openTopic, setOpenTopic] = useState(false)
+  // const [openLocation, setOpenLocation] = useState(false)
+  // const [openTopic, setOpenTopic] = useState(false)
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
-    defaultValues: post ? {
-      content: post.content,
-      location: post.location,
-      topic: post.topic,
-    } : {
-      content: "",
-      location: "",
-      topic: "",
+    defaultValues: {
+      content: post ? post.content : "",
+      article: post ? post.article : articleUrl || "",
     },
   });
 
@@ -96,62 +95,82 @@ const PostForm = ({ post }: PostFormProps) => {
     }
   }
 
-  function LocationList({ setOpen, field }: { setOpen: (open: boolean) => void, field: any }) {
-    return (
-      <Command className="bg-dark-2">
-        <CommandInput placeholder="Search location..." className="bg-dark-2 text-light-1" />
-        <CommandList className="bg-dark-2">
-          <CommandEmpty className="text-light-2">No location found.</CommandEmpty>
-          <CommandGroup className="bg-dark-2">
-            {locations.map((location) => (
-              <CommandItem
-                key={location.value}
-                value={location.value}
-                className="text-light-1 hover:bg-dark-4"
-                onSelect={(value) => {
-                  field.onChange(value)
-                  setOpen(false)
-                }}
-              >
-                {location.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    )
-  }
+  // function LocationList({ setOpen, field }: { setOpen: (open: boolean) => void, field: ControllerRenderProps<z.infer<typeof PostValidation>, 'location'> }) {
+  //   return (
+  //     <Command className="bg-dark-2">
+  //       <CommandInput placeholder="Search location..." className="bg-dark-2 text-light-1" />
+  //       <CommandList className="bg-dark-2">
+  //         <CommandEmpty className="text-light-2">No location found.</CommandEmpty>
+  //         <CommandGroup className="bg-dark-2">
+  //           {locations.map((location) => (
+  //             <CommandItem
+  //               key={location.value}
+  //               value={location.value}
+  //               className="text-light-1 hover:bg-dark-4"
+  //               onSelect={(value) => {
+  //                 field.onChange(value)
+  //                 setOpen(false)
+  //               }}
+  //             >
+  //               {location.label}
+  //             </CommandItem>
+  //           ))}
+  //         </CommandGroup>
+  //       </CommandList>
+  //     </Command>
+  //   )
+  // }
 
-  function TopicList({ setOpen, field }: { setOpen: (open: boolean) => void, field: any }) {
-    return (
-      <Command className="bg-dark-2">
-        <CommandInput placeholder="Search topic..." className="bg-dark-2 text-light-1" />
-        <CommandList className="bg-dark-2">
-          <CommandEmpty className="text-light-2">No topic found.</CommandEmpty>
-          <CommandGroup className="bg-dark-2">
-            {topics.map((topic) => (
-              <CommandItem
-                key={topic.value}
-                value={topic.value}
-                className="text-light-1 hover:bg-dark-4"
-                onSelect={(value) => {
-                  field.onChange(value)
-                  setOpen(false)
-                }}
-              >
-                {topic.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    )
-  }
+  // function TopicList({ setOpen, field }: { setOpen: (open: boolean) => void, field: ControllerRenderProps<z.infer<typeof PostValidation>, 'topic'> }) {
+  //   return (
+  //     <Command className="bg-dark-2">
+  //       <CommandInput placeholder="Search topic..." className="bg-dark-2 text-light-1" />
+  //       <CommandList className="bg-dark-2">
+  //         <CommandEmpty className="text-light-2">No topic found.</CommandEmpty>
+  //         <CommandGroup className="bg-dark-2">
+  //           {topics.map((topic) => (
+  //             <CommandItem
+  //               key={topic.value}
+  //               value={topic.value}
+  //               className="text-light-1 hover:bg-dark-4"
+  //               onSelect={(value) => {
+  //                 field.onChange(value)
+  //                 setOpen(false)
+  //               }}
+  //             >
+  //               {topic.label}
+  //             </CommandItem>
+  //           ))}
+  //         </CommandGroup>
+  //       </CommandList>
+  //     </Command>
+  //   )
+  // }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-9 w-full max-w-5xl">
         <FormField
+          control={form.control}
+          name="article"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="shad-form_label">Article URL (Optional)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="url" 
+                  className="shad-input" 
+                  {...field} 
+                  placeholder="https://example.com/article"
+                  disabled={!!articleUrl} // Disable if URL was provided
+                />
+              </FormControl>
+              <FormMessage className="shad-form_message" />
+            </FormItem>
+          )}
+        />
+
+        {/* <FormField
           control={form.control}
           name="location"
           render={({ field }) => (
@@ -191,9 +210,9 @@ const PostForm = ({ post }: PostFormProps) => {
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
-        />
+        /> */}
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="topic"
           render={({ field }) => (
@@ -233,7 +252,7 @@ const PostForm = ({ post }: PostFormProps) => {
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}

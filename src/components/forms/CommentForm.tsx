@@ -17,6 +17,7 @@ import { useUserContext } from "@/context/authContext";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useGetPostById } from "@/lib/react-query/queriesAndMutations"; // To fetch the parent post
+import { Loader } from "lucide-react";
 
 type CommentFormProps = {
   postId: string; // ID of the post being replied to
@@ -86,13 +87,15 @@ const CommentForm = ({ postId }: CommentFormProps) => {
               <div className="flex items-center gap-4">
                 <FormControl>
                   <Input
-                    placeholder="Comment"
+                    placeholder="Post your reply"
                     className="shad-input custom-scrollbar flex-grow"
                     {...field}
                   />
                 </FormControl>
                 <Button type="submit" className="shad-button_primary" disabled={isLoadingCreate}>
-                  {isLoadingCreate ? "Posting..." : "Comment"}
+                  {isLoadingCreate ? <Loader /> : 
+                    <img src='/assets/icons/arrow.svg' className="invert-white" width={24} alt='upload-post'/>
+                  }
                 </Button>
               </div>
               <FormMessage className="shad-form_message" />

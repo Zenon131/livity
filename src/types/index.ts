@@ -7,7 +7,6 @@ export type IContextType = {
   checkAuthUser: () => Promise<boolean>;
 };
 
-
 export type INavLink = {
     imgURL: string;
     route: string;
@@ -28,10 +27,11 @@ export type INavLink = {
   export type INewPost = {
     userId: string;
     content: string;
-    location: string;
-    // community: string;
+    location?: string;
     topic?: string;
     parentId?: string;
+    article?: string;
+    articleTitle?: string;
   };
   
   export type IUpdatePost = {
@@ -43,6 +43,26 @@ export type INavLink = {
     location?: string;
     tags?: string;
   };
+
+export interface ITopic {
+  $id: string;
+  name: string;
+  description: string;
+  postCount: number;
+  followerCount: number;
+  createdAt: string;
+}
+
+export interface INewTopic {
+  name: string;
+  description: string;
+}
+
+export interface IUserTopic {
+  userId: string;
+  topicId: string;
+  followedAt: string;
+}
   
   export type IUser = {
     id: string;
@@ -50,6 +70,7 @@ export type INavLink = {
     email: string;
     imgurl?: string;
     bio?: string;
+  followedTopics?: string[]; // Array of topic IDs
     // location: string;
   };
   

@@ -35,14 +35,15 @@ const LeftSidebar = () => {
         <nav className='leftsidebar'>
             <div className='flex flex-col gap-11'>
                 <Link to='/' className='flex gap-3 items-center' title='Go to Home'>
-                    <img src='/assets/images/bashmnt2.svg' alt='Bashmnt Logo' width={150} height={36}/>
+                    <img src='/assets/icons/Fortress.svg' alt='Fortress Logo' width={100} height={36}/>
                 </Link>
                 <ul className='flex flex-col gap-6'>
                     {sidebarLinks.map((link: INavLink) => {
                         const isActive = pathname === link.route
+                        const finalRoute = link.route === '/update-profile' ? `${link.route}/${user.id}` : link.route
                         return (
                             <li key={link.label} className={`leftsidebar-link group ${isActive && 'bg-primary-500'}`}>
-                                <NavLink to={link.route} className='flex gap-4 items-center p-6'>
+                                <NavLink to={finalRoute} className='flex gap-2 items-center p-3'>
                                     <img src={link.imgURL} className={`${isActive ? 'invert' : 'group-hover:invert'} transition-all duration-300`} alt={link.label} width={24} height={24}/>
                                     {link.label}
                                 </NavLink>

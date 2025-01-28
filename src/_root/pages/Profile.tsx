@@ -1,10 +1,10 @@
 import {
-  Route,
-  Routes,
+  // Route,
+  // Routes,
   Link,
-  Outlet,
+  // Outlet,
   useParams,
-  useLocation,
+  // useLocation,
 } from "react-router-dom";
 
 import { useUserContext } from "@/context/authContext";
@@ -12,9 +12,10 @@ import Loader from "@/components/shared/Loader";
 import PostCard from "@/components/shared/PostCard";
 import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
 import { multiFormatDateString } from "@/lib/utils";
-import { useMemo } from "react";
+// import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Models } from "appwrite";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface StatBlockProps {
   value: string | number;
@@ -28,50 +29,10 @@ const StatBlock = ({ value, label }: StatBlockProps) => (
   </div>
 );
 
-// Define the types for the props
-type Post = {
-  topic?: string;
-};
-
-type FrequentTopicsProps = {
-  posts: Post[];
-};
-
-const FrequentTopics: React.FC<FrequentTopicsProps> = ({ posts }) => {
-  const topicCounts = useMemo(() => {
-    const counts: Record<string, number> = Object.create(null);
-    
-    posts.forEach((post) => {
-      if (post.topic) {
-        counts[post.topic] = (counts[post.topic] || 0) + 1;
-      }
-    });
-    
-    // Sort topics by their frequency in descending order
-    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  }, [posts]);
-
-  return (
-    <div className="frequent-topics">
-      {topicCounts.length > 0 ? (
-        <ul>
-          {topicCounts.map(([topic, count]) => (
-            <li key={topic}>
-              {topic} - {count} {count > 1 ? "posts" : "post"}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No topics found.</p>
-      )}
-    </div>
-  );
-};
-
 const Profile = () => {
   const { id } = useParams();
   const { user } = useUserContext();
-  const { pathname } = useLocation();
+  // const { pathname } = useLocation();
 
   const { data: currentUser, isLoading } = useGetUserById(id || "");
 
@@ -87,6 +48,15 @@ const Profile = () => {
     ? [...currentUser.posts].sort((a, b) => {
         return new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime();
       })
+    : [];
+
+  // Filter posts to only include those with article URLs
+  const articlePosts = currentUser.posts
+    ? [...currentUser.posts]
+        .filter(post => post.article && post.article.trim() !== '')
+        .sort((a, b) => {
+          return new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime();
+        })
     : [];
 
   const isCurrentUserProfile = user?.id === currentUser.$id;
@@ -147,74 +117,108 @@ const Profile = () => {
                   width={24}
                   height={24}
                 />
-                {/* <p className="flex whitespace-nowrap small-medium">
-                  Edit Profile
-                </p> */}
               </Link>
             ) : null}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-center max-w-5xl w-full mt-10">
-        <Link
-          to={`/profile/${id}`}
-          className={`profile-tab rounded-l-lg ${
-            pathname === `/profile/${id}` && "!bg-dark-3"
-          }`}
-        >
-          <img
-            src="/assets/icons/Create PostCust.svg"
-            alt="posts"
-            width={20}
-            height={20}
-          />
-          Posts
-        </Link>
-        <Link
-          to={`/profile/${id}/topics`}
-          className={`profile-tab rounded-r-lg ${
-            pathname === `/profile/${id}/topics` && "!bg-dark-3"
-          }`}
-        >
-          <img
-            src="/assets/icons/!.svg"
-            alt="topics"
-            width={20}
-            height={20}
-          />
-          Frequent Topics
-        </Link>
-      </div>
+      <Tabs defaultValue="posts" className="w-full max-w-5xl mt-10">
+        <TabsList className="flex w-full bg-dark-2 min-h-[42px] p-1">
+          <TabsTrigger 
+            value="posts" 
+            className="flex-1 data-[state=active]:bg-dark-4"
+          >
+            <div className="flex-center gap-2">
+              Posts
+            </div>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="replies"
+            className="flex-1 data-[state=active]:bg-dark-4"
+          >
+            <div className="flex-center gap-2">
+              Replies
+            </div>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="shared"
+            className="flex-1 data-[state=active]:bg-dark-4"
+          >
+            <div className="flex-center gap-2">
+              Articles
+            </div>
+          </TabsTrigger>
+        </TabsList>
 
-      <Routes>
-        <Route
-          index
-          element={
-            sortedPosts.length > 0 ? (
-              sortedPosts.map((post: Models.Document) => (
-                <PostCard
-                  key={post.$id}
-                  post={{
-                    ...post,
-                    creator: {
-                      username: currentUser.username,
-                      imgurl: currentUser.imgurl,
-                    },
-                  }}
-                />
+        <TabsContent value="posts" className="mt-5">
+          <div className="flex flex-col gap-9">
+            {sortedPosts.filter(post => !post.parentId).length > 0 ? (
+              sortedPosts
+                .filter(post => !post.parentId)
+                .map((post: Models.Document) => (
+                  <PostCard
+                    key={post.$id}
+                    post={{
+                      ...post,
+                      creator: {
+                        username: currentUser.username,
+                        imgurl: currentUser.imgurl,
+                      },
+                    }}
+                  />
+                ))
+            ) : (
+              <p className="text-light-3">No posts yet.</p>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="replies" className="mt-5">
+          <div className="flex flex-col gap-9">
+            {sortedPosts.filter(post => post.parentId).length > 0 ? (
+              sortedPosts
+                .filter(post => post.parentId)
+                .map((post: Models.Document) => (
+                  <PostCard
+                    key={post.$id}
+                    post={{
+                      ...post,
+                      creator: {
+                        username: currentUser.username,
+                        imgurl: currentUser.imgurl,
+                      },
+                    }}
+                  />
+                ))
+            ) : (
+              <p className="text-light-3">No replies yet.</p>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="shared" className="mt-5">
+          <div className="flex flex-col gap-9">
+            {articlePosts.length > 0 ? (
+              articlePosts
+                .map((post: Models.Document) => (
+                  <PostCard
+                    key={post.$id}
+                    post={{
+                      ...post,
+                      creator: {
+                        username: currentUser.username,
+                        imgurl: currentUser.imgurl,
+                      },
+                    }}
+                  />
               ))
             ) : (
-              <p>No posts yet.</p>
-            )
-          }
-        />
-        <Route
-          path="topics"
-          element={<FrequentTopics posts={sortedPosts} />}
-        />
-      </Routes>
-      <Outlet />
+              <p className="text-light-3">No shared articles yet.</p>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
