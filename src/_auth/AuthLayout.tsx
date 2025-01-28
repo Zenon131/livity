@@ -15,7 +15,7 @@ function AuthLayout() {
 
           <img 
           alt="side-image" 
-          src="/assets/images/b!.svg" 
+          src="/assets/icons/Fortress.svg" 
           className='hidden xl:block h-screen w-1/2 object-cover bg-no-repeat'
           />
 
