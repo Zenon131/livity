@@ -35,7 +35,7 @@ const LeftSidebar = () => {
         <nav className='leftsidebar'>
             <div className='flex flex-col gap-11'>
                 <Link to='/' className='flex gap-3 items-center' title='Go to Home'>
-                    <img src='/assets/icons/Fortress.svg' alt='Fortress Logo' width={100} height={36}/>
+                    <img src='/assets/icons/livity.svg' alt='Livity Logo' width={100} height={36}/>
                 </Link>
                 <ul className='flex flex-col gap-6'>
                     {sidebarLinks.map((link: INavLink) => {

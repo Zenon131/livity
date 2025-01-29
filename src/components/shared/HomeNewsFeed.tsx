@@ -6,7 +6,6 @@ import { Input } from '../ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/card';
 import { useToast } from '../ui/use-toast';
 import { useUserContext } from '@/context/authContext';
-import { useNavigate } from 'react-router-dom';
 import {
   Select,
   SelectContent,
@@ -14,6 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Share2, Twitter, Facebook, Link as LinkIcon } from 'lucide-react';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const categories = [
   'general',
@@ -30,9 +36,10 @@ const HomeNewsFeed = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
   const [articleSummary, setArticleSummary] = useState<string>('');
+  const [selectedText, setSelectedText] = useState('');
+  const [shareCount, setShareCount] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { user } = useUserContext();
-  const navigate = useNavigate();
 
   const { data: topNews, isLoading: isLoadingTop } = useGetTopNews(selectedCategory);
   const { data: searchResults, isLoading: isLoadingSearch } = useSearchNews(searchQuery);
@@ -51,7 +58,7 @@ const HomeNewsFeed = () => {
     setSearchQuery('');
   };
 
-  const handleShareArticle = async (article: NewsArticle) => {
+  const handleShareArticle = async (article: NewsArticle, platform?: string) => {
     if (!user) {
       toast({
         title: "Please sign in",
@@ -61,7 +68,55 @@ const HomeNewsFeed = () => {
       return;
     }
 
-    navigate(`/create-post?article=${encodeURIComponent(article.url)}&topic=${selectedCategory}&location=${encodeURIComponent(article.source.name)}&articleTitle=${encodeURIComponent(article.title)}`);
+    const shareText = selectedText 
+      ? `"${selectedText}" - Check out this interesting highlight from:`
+      : 'Check out this interesting article:';
+    
+    const articleUrl = `${window.location.origin}/article/${encodeURIComponent(article.url)}`;
+    const fullShareText = `${shareText} ${article.title}\n\n${articleUrl}`;
+
+    if (platform) {
+      let platformShareUrl: string;
+      switch (platform) {
+        case 'twitter':
+          platformShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullShareText)}`;
+          break;
+        case 'facebook':
+          platformShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`;
+          break;
+        case 'bluesky':
+          platformShareUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(fullShareText)}`;
+          break;
+        default:
+          return; // Exit if platform is not supported
+      }
+      if (platformShareUrl) {
+        window.open(platformShareUrl, '_blank');
+      }
+    } else {
+      // Copy to clipboard for direct link sharing
+      await navigator.clipboard.writeText(fullShareText);
+      toast({
+        title: "Link copied!",
+        description: "Share link has been copied to your clipboard",
+      });
+    }
+
+    // Update share count
+    setShareCount(prev => ({
+      ...prev,
+      [article.url]: (prev[article.url] || 0) + 1
+    }));
+
+    // Track share analytics
+    // TODO: Implement analytics tracking
+  };
+
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      setSelectedText(selection.toString());
+    }
   };
 
   // Set the first article as selected if none is selected
@@ -137,30 +192,88 @@ const HomeNewsFeed = () => {
                 {selectedArticle.source.name} • {new Date(selectedArticle.publishedAt).toLocaleDateString()}
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-light-2">
+            <CardContent 
+              className="text-light-2"
+              onMouseUp={handleTextSelection}
+            >
               <p className="whitespace-pre-line">{articleSummary}</p>
             </CardContent>
-            <CardFooter className="flex gap-2">
-              <Button 
-                variant="default"
-                onClick={() => window.open(selectedArticle.url, '_blank')}
-                className="flex-1 hover:bg-primary-500 text-white"
-              >
-                Read Full Article
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => handleShareArticle(selectedArticle)}
-                className="flex gap-2"
-              >
-                <img
-                  src="/assets/icons/share.svg"
-                  alt="share"
-                  width={20}
-                  height={20}
-                />
-                Share
-              </Button>
+            <CardFooter className="flex flex-col gap-4">
+              <div className="flex w-full gap-2">
+                <Button 
+                  variant="default"
+                  onClick={() => window.open(selectedArticle.url, '_blank')}
+                  className="flex-1 hover:bg-primary-500 text-white"
+                >
+                  Read Full Article
+                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleShareArticle(selectedArticle)}
+                        className="hover:bg-primary-500"
+                      >
+                        <LinkIcon className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Copy share link</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              
+              <div className="flex w-full justify-between items-center">
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleShareArticle(selectedArticle, 'twitter')}
+                    className="hover:bg-primary-500"
+                  >
+                    <Twitter className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleShareArticle(selectedArticle, 'facebook')}
+                    className="hover:bg-primary-500"
+                  >
+                    <Facebook className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleShareArticle(selectedArticle, 'bluesky')}
+                    className="hover:bg-primary-500"
+                  >
+                    <img src="assets/icons/Bluesky-Line--Streamline-Remix.svg" className="h-4 w-4 invert-white" />
+                  </Button>
+                </div>
+                {shareCount[selectedArticle.url] > 0 && (
+                  <span className="text-sm text-light-2">
+                    Shared {shareCount[selectedArticle.url]} times
+                  </span>
+                )}
+              </div>
+              {selectedText && (
+                <div className="w-full p-2 bg-dark-3 rounded-lg">
+                  <p className="text-sm text-light-2 mb-2">Share this highlight:</p>
+                  <p className="text-light-1 italic">"{selectedText}"</p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleShareArticle(selectedArticle)}
+                    className="mt-2 hover:bg-primary-500"
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share Quote
+                  </Button>
+                </div>
+              )}
             </CardFooter>
           </Card>
         ) : (

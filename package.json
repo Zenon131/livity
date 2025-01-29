@@ -11,7 +11,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@atproto/api": "^0.13.31",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-dialog": "^1.1.4",
@@ -23,6 +22,7 @@
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tabs": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-tooltip": "^1.1.7",
     "@tanstack/react-query": "^5.51.23",
     "appwrite": "^15.0.0",
     "axios": "^1.7.9",

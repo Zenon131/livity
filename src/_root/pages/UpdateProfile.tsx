@@ -403,16 +403,16 @@ const UpdateProfile = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="Fortress Initiatives">
-            <AccordionTrigger className="text-left text-light-1">Fortress Initiatives</AccordionTrigger>
+          <AccordionItem value="Livity Initiatives">
+            <AccordionTrigger className="text-left text-light-1">Livity Initiatives</AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col gap-6 text-light-2">
                 <div>
-                  <h3 className="h4-bold mb-4">Fortress Initiatives</h3>
+                  <h3 className="h4-bold mb-4">Livity Initiatives</h3>
                   <div className="bg-dark-4 rounded-lg p-6">
                     <div className="flex items-start gap-4">
                       <div className="flex-1">
-                        <h4 className="base-semibold mb-2">Livity Lab</h4>
+                        <h4 className="base-semibold mb-2">The Futures Lab</h4>
                         <p className="text-light-3 mb-4">
                           A research lab/initiative aimed at using information and data to make forecasts in economics, climate, population, and health to help governments and organizations make policy decisions.
                         </p>
