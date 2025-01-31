@@ -65,6 +65,21 @@ const NewsFeed = () => {
     navigate(`/create-post?article=${encodeURIComponent(article.url)}&topic=${selectedCategory}&location=${encodeURIComponent(article.source.name)}&articleTitle=${encodeURIComponent(article.title)}`);
   };
 
+  const handleCopyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Quote copied!",
+        description: "The selected text has been copied to your clipboard.",
+      });
+    }).catch(err => {
+      toast({
+        title: "Copy failed",
+        description: `Failed to copy text to clipboard. ${err}`,
+        variant: "destructive",
+      });
+    });
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
@@ -151,6 +166,13 @@ const NewsFeed = () => {
                     height={20}
                   />
                   Share
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => handleCopyToClipboard(articleSummary)}
+                  className="flex gap-2"
+                >
+                  Copy Quote
                 </Button>
               </CardFooter>
             </Card>

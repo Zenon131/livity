@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGetTopNews, useSearchNews } from '@/lib/react-query/queriesAndMutations';
 import { NewsArticle } from '@/lib/news/newsService';
 import { Button } from '../ui/button';
@@ -13,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Share2, Twitter, Facebook, Link as LinkIcon } from 'lucide-react';
+import { Share2, Twitter, Facebook } from 'lucide-react';
 import { 
   Tooltip,
   TooltipContent,
@@ -37,9 +38,10 @@ const HomeNewsFeed = () => {
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
   const [articleSummary, setArticleSummary] = useState<string>('');
   const [selectedText, setSelectedText] = useState('');
-  const [shareCount, setShareCount] = useState<Record<string, number>>({});
+  // const [shareCount, setShareCount] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { user } = useUserContext();
+  const navigate = useNavigate();
 
   const { data: topNews, isLoading: isLoadingTop } = useGetTopNews(selectedCategory);
   const { data: searchResults, isLoading: isLoadingSearch } = useSearchNews(searchQuery);
@@ -51,6 +53,20 @@ const HomeNewsFeed = () => {
     setSelectedArticle(article);
     const summary = `${article.title}\n\nKey Points:\n- ${article.description}\n- Published by ${article.source.name}\n- ${new Date(article.publishedAt).toLocaleDateString()}`;
     setArticleSummary(summary);
+  };
+
+  const handleShareArticleCard = async (article: NewsArticle) => {
+    if (!user) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to share articles",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Navigate to post form with article URL
+    navigate(`/create-post?article=${encodeURIComponent(article.url)}&topic=${selectedCategory}&location=${encodeURIComponent(article.source.name)}&articleTitle=${encodeURIComponent(article.title)}`);
   };
 
   const handleCategoryChange = (category: string) => {
@@ -103,10 +119,10 @@ const HomeNewsFeed = () => {
     }
 
     // Update share count
-    setShareCount(prev => ({
-      ...prev,
-      [article.url]: (prev[article.url] || 0) + 1
-    }));
+    // setShareCount(prev => ({
+    //   ...prev,
+    //   [article.url]: (prev[article.url] || 0) + 1
+    // }));
 
     // Track share analytics
     // TODO: Implement analytics tracking
@@ -117,6 +133,21 @@ const HomeNewsFeed = () => {
     if (selection && selection.toString().length > 0) {
       setSelectedText(selection.toString());
     }
+  };
+
+  const handleCopyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Quote copied!",
+        description: "The selected text has been copied to your clipboard.",
+      });
+    }).catch(err => {
+      toast({
+        title: "Copy failed",
+        description: `Failed to copy text to clipboard. ${err}`,
+        variant: "destructive",
+      });
+    });
   };
 
   // Set the first article as selected if none is selected
@@ -211,16 +242,16 @@ const HomeNewsFeed = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
-                        onClick={() => handleShareArticle(selectedArticle)}
-                        className="hover:bg-primary-500"
+                        onClick={() => handleShareArticleCard(selectedArticle)}
+
                       >
-                        <LinkIcon className="h-4 w-4" />
+                        <img src="/assets/icons/share.svg" width={24} height={24} alt="share" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Copy share link</p>
+                      <p>Share article</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -253,11 +284,6 @@ const HomeNewsFeed = () => {
                     <img src="assets/icons/Bluesky-Line--Streamline-Remix.svg" className="h-4 w-4 invert-white" />
                   </Button>
                 </div>
-                {shareCount[selectedArticle.url] > 0 && (
-                  <span className="text-sm text-light-2">
-                    Shared {shareCount[selectedArticle.url]} times
-                  </span>
-                )}
               </div>
               {selectedText && (
                 <div className="w-full p-2 bg-dark-3 rounded-lg">
@@ -266,11 +292,11 @@ const HomeNewsFeed = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleShareArticle(selectedArticle)}
+                    onClick={() => handleCopyToClipboard(selectedText)}
                     className="mt-2 hover:bg-primary-500"
                   >
                     <Share2 className="h-4 w-4 mr-2" />
-                    Share Quote
+                    Copy Quote
                   </Button>
                 </div>
               )}
@@ -327,7 +353,7 @@ const HomeNewsFeed = () => {
                     variant="ghost"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleShareArticle(article);
+                      handleShareArticleCard(article);
                     }}
                     className="hover:bg-dark-3"
                     size="sm"

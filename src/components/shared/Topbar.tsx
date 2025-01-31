@@ -27,10 +27,10 @@ const Topbar = () => {
     // }, [isSuccess, navigate]);
 
     return (
-        <section className="topbar">
+        <section className="topbar fixed top-0 z-50 w-full bg-dark-2">
             <div className="flex-between py-4 px-5">
                 <Link to="/" className="flex gap-3 items-center" title="Go to Home">
-                    <img src="/assets/icons/Fortress.svg" alt="Tether Logo" width={50} height={12} />
+                    <img src="/assets/icons/livity.svg" alt="Tether Logo" width={50} height={12} />
                 </Link>
                 <div className="flex gap-4">
                     {/* <Button variant="ghost" className="shad-button_ghost" onClick={() => logout()}>
