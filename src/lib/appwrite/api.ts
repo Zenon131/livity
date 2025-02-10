@@ -5,6 +5,20 @@ import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
 export async function createUserAccount(user: INewUser) {
     try {
+        // First check if user exists
+        try {
+            const session = await account.createEmailPasswordSession(user.email, user.password);
+            if (session) {
+                throw new Error('User already exists. Please login instead.');
+            }
+        } catch (error: any) {
+            // If error is not about existing user, throw it
+            if (!error.message?.includes('Invalid credentials')) {
+                throw error;
+            }
+        }
+
+        // Create new account if user doesn't exist
         const newAcc = await account.create(
             ID.unique(),
             user.email,
@@ -12,23 +26,24 @@ export async function createUserAccount(user: INewUser) {
             user.username,
         );
 
-
-        if (!newAcc) throw new Error("Account creation failed");
+        if (!newAcc) throw Error("Account creation failed");
 
         const aviURL = avatars.getInitials(user.username);
 
         const newUser = await saveUserToDB({
             email: newAcc.email,
-            username: newAcc.name,  // Correct property
+            username: newAcc.name,
             accountId: newAcc.$id,
-            imgurl: aviURL.toString(),  // Convert URL to string
+            imgurl: aviURL.toString(),
         });
 
+        // Create session for new user
+        await account.createEmailPasswordSession(user.email, user.password);
 
         return newUser;
-    } catch (err) {
-        console.error("Error creating user account:", err);
-        return err;
+    } catch (error: any) {
+        console.error("Error creating user account:", error);
+        throw error;
     }
 }
 
@@ -37,7 +52,7 @@ export async function saveUserToDB(user: {
     email: string;
     username: string;
     accountId: string;
-    imgurl: string;  // Use the exact field name as defined in the Appwrite schema
+    imgurl: string;
     // location: string
 }) {
     try {
@@ -49,7 +64,7 @@ export async function saveUserToDB(user: {
                 email: user.email,
                 username: user.username,
                 accountId: user.accountId,
-                imgurl: user.imgurl,  // Ensure this matches the Appwrite schema
+                imgurl: user.imgurl,
                 // location: user.location
             }
         );
@@ -65,22 +80,27 @@ export async function saveUserToDB(user: {
 
 export async function loginAccount(user: { email: string; password: string; }) {
     try {
-        // Check if there is an existing session
-        const currentSession = await account.getSession('current').catch(() => null);
-
-
-        if (currentSession) {
-            // Optionally log out or delete the current session
-            await account.deleteSession(currentSession.$id);
+        // Delete any existing sessions
+        try {
+            const currentSession = await account.getSession('current');
+            if (currentSession) {
+                await account.deleteSession(currentSession.$id);
+            }
+        } catch (error) {
+            // Ignore session errors
         }
 
-
-        // Now create a new session
+        // Create new session
         const session = await account.createEmailPasswordSession(user.email, user.password);
+        
+        if (!session) {
+            throw new Error('Failed to create session');
+        }
+
         return session;
-    } catch (err) {
-        console.error("Error logging in:", err);
-        return err;
+    } catch (error: any) {
+        console.error("Error logging in:", error);
+        throw new Error(error.message || 'Invalid credentials. Please check your email and password.');
     }
 }
 
@@ -89,22 +109,22 @@ export async function getCurrentUser() {
     try {
         const currentAcc = await account.get();
 
-
-        if (!currentAcc) throw new Error("Failed to retrieve current account");
+        if (!currentAcc) throw new Error("No account found");
 
         const currentUser = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.userCollectionId,
-            [Query.equal('accountId', currentAcc.$id)]  // Use the correct query filter
+            [Query.equal('accountId', currentAcc.$id)]
         );
 
-
-        if (currentUser.documents.length === 0) throw new Error("No user found with this accountId");
+        if (!currentUser.documents.length) {
+            throw new Error("No user found");
+        }
 
         return currentUser.documents[0];
-    } catch (err) {
-        console.error("Error fetching current user:", err);
-        return null;
+    } catch (error: any) {
+        console.error("Error fetching current user:", error);
+        throw error;
     }
 }
 
@@ -271,7 +291,7 @@ export async function createComment(comment: INewComment) {
                 userId: comment.userId,
                 postId: comment.postId,
                 content: comment.content,
-                parentCommentId: comment.parentCommentId || null,  // Support for threading
+                parentCommentId: comment.parentCommentId || null,  
                 commentor: comment.userId
             }
         );
@@ -311,11 +331,11 @@ export async function getPostByParent(postId: string) {
         const response = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
-            [Query.equal('parentId', parentPostId)]  // Query to find documents with the given parentId
+            [Query.equal('parentId', parentPostId)]  
         );
         
         // Return the count of documents
-        return response.total;  // or response.documents.length if you need to count documents
+        return response.total;  
     } catch (err) {
         console.error("Error fetching child post count:", err);
         throw err;

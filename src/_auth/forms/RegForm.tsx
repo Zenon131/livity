@@ -23,7 +23,7 @@ function RegForm() {
   const navigate = useNavigate()
 
   const { mutateAsync: createUserAccount, isPending: isCreatingAcc } = useCreateUserAccMutation();
-  const { mutateAsync: loginAccount } = useLoginAccMutation(); // Removed `isLoggingIn`
+  const { mutateAsync: loginAccount } = useLoginAccMutation();
 
   const form = useForm<z.infer<typeof RegValidation>>({
     resolver: zodResolver(RegValidation),
@@ -37,27 +37,43 @@ function RegForm() {
 
   async function onSubmit(values: z.infer<typeof RegValidation>) {
     try {
-      const newUser = await createUserAccount(values);
-      if (!newUser) throw new Error('Error creating account');
-
+      // Create the user account
+      await createUserAccount(values);
+      
+      // Explicitly login after registration
       const session = await loginAccount({
         email: values.email,
         password: values.password,
       });
-      if (!session) throw new Error('Error logging in');
+
+      if (!session) {
+        throw new Error('Failed to login after registration');
+      }
 
       const isLoggedIn = await checkAuthUser();
       if (isLoggedIn) {
         form.reset();
         navigate('/');
       } else {
-        throw new Error('Error signing up');
+        throw new Error('Failed to verify user after registration');
       }
-    } catch {
+    } catch (error: any) {
+      // If user exists, redirect to login
+      if (error?.message?.includes('already exists') || error?.message?.includes('User already exists')) {
+        toast({
+          title: 'Account exists',
+          description: 'Please login with your existing account',
+          variant: 'default',
+        });
+        navigate('/sign-in');
+        return;
+      }
+
+      // For other errors
       toast({
-        title: 'Something went wrong',
+        title: 'Registration failed',
+        description: error?.message || 'Something went wrong',
         variant: 'destructive',
-        className: 'toast-error',
       });
     }
   }
