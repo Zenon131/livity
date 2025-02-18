@@ -155,7 +155,7 @@ const HomeNewsFeed = () => {
     if (displayedNews?.length && !selectedArticle) {
       handleArticleClick(displayedNews[0]);
     }
-  }, [displayedNews]);
+  }, [displayedNews, selectedArticle]);
 
   return (
     <div className="flex flex-col gap-6">

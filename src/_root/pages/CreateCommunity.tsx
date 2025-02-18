@@ -46,7 +46,7 @@ const CreateCommunity = () => {
         description: "Community created successfully"
       });
       navigate('/'); // Navigate to the new community page once implemented
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create community",
