@@ -3,7 +3,9 @@ import { Client, Account, Databases, Storage, Avatars } from 'appwrite';
 // Ensure all environment variables are correctly loaded
 export const appwriteConfig = {
     projectId: import.meta.env.VITE_APPWRITE_PRJID, // Appwrite project ID
-    url: import.meta.env.VITE_APPWRITE_URL, // Appwrite API endpoint
+    url: window.location.hostname === 'localhost' 
+        ? 'http://localhost:5173/api/appwrite'
+        : 'https://www.livity.app/api/appwrite', // Appwrite API endpoint
     databaseId: import.meta.env.VITE_APPWRITE_DBID, // Appwrite database ID
     storageId: import.meta.env.VITE_APPWRITE_STRGID, // Appwrite storage ID
     userCollectionId: import.meta.env.VITE_APPWRITE_USERS_COLL_ID, // Users collection ID
