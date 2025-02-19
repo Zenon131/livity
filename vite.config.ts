@@ -9,4 +9,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      '/v1': {
+        target: 'https://cloud.appwrite.io',
+        changeOrigin: true,
+        secure: true,
+        headers: {
+          'Origin': 'https://www.livity.app'
+        }
+      }
+    }
+  }
 })

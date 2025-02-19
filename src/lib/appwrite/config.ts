@@ -14,12 +14,16 @@ export const appwriteConfig = {
     messagesCollectionId: import.meta.env.VITE_APPWRITE_MESSAGES_COLL_ID, // Messages collection ID
 }
 
-// Initialize Appwrite client
+// Create and export the client
 export const appwriteClient = new Client()
-    .setProject(appwriteConfig.projectId)
-    .setEndpoint(appwriteConfig.url);
+    .setEndpoint(appwriteConfig.url)
+    .setProject(appwriteConfig.projectId);
 
-// Initialize Appwrite services
+// Configure CORS settings
+appwriteClient.headers['X-Appwrite-Response-Format'] = '1.0.0';
+appwriteClient.headers['Access-Control-Allow-Origin'] = 'https://www.livity.app';
+
+// Create and export service instances
 export const account = new Account(appwriteClient);
 export const databases = new Databases(appwriteClient);
 export const storage = new Storage(appwriteClient);
