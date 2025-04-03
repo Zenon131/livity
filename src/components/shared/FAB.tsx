@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'; // Assuming you have a utility for class names
+import { cn } from '@/lib/utils/utils';
 import React from 'react';
 import { Link } from 'react-router-dom';
 

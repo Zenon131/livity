@@ -2,7 +2,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import OpenAI from "openai"
-import { extractContentFromPosts, fetchPostsByTopic } from "./appwrite/api";
+import { extractContentFromPosts, fetchPostsByTopic } from "../appwrite/api";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

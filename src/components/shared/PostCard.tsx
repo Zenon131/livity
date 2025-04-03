@@ -1,4 +1,4 @@
-import { multiFormatDateString } from '@/lib/utils';
+import { multiFormatDateString } from '@/lib/utils/utils';
 import { Models } from 'appwrite';
 import { Link } from 'react-router-dom';
 // import { Button } from '@/components/ui/button';

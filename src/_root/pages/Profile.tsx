@@ -11,7 +11,7 @@ import { useUserContext } from "@/context/authContext";
 import Loader from "@/components/shared/Loader";
 import PostCard from "@/components/shared/PostCard";
 import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
-import { multiFormatDateString } from "@/lib/utils";
+import { multiFormatDateString } from "@/lib/utils/utils";
 // import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Models } from "appwrite";

@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import CommentForm from '@/components/forms/CommentForm';
 import Loader from '@/components/shared/Loader';
 import { useGetPostById, useGetPostsByParent } from '@/lib/react-query/queriesAndMutations';
-import { multiFormatDateString } from '@/lib/utils';
+import { multiFormatDateString } from '@/lib/utils/utils';
 import CommentCard from '@/components/shared/CommentCard';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
