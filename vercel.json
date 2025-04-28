@@ -32,28 +32,9 @@
       ]
     }
   ],
-  "routes": [
-    {
-      "src": "/v1/(.*)",
-      "dest": "https://cloud.appwrite.io/v1/$1"
-    },
-    {
-      "src": "^/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "^/src/(.*\\.(?:js|jsx|ts|tsx))",
-      "dest": "/src/$1",
-      "headers": {
-        "Content-Type": "application/javascript"
-      }
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/v1/(.*)", "destination": "https://cloud.appwrite.io/v1/$1" },
+    { "source": "^/assets/(.*)", "destination": "/assets/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
