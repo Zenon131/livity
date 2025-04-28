@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { fallbackNews } from './fallback';
+import { gnewsService } from './gnewsService';
 
 const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 const NEWS_API_BASE_URL = 'https://newsapi.org/v2';
@@ -27,12 +28,13 @@ export interface NewsResponse {
 
 export const newsService = {
   async getTopNews(category?: string, country: string = 'us') {
-    // In production, return fallback data
+    // In production, use Gnews API instead of NewsAPI
     if (IS_PRODUCTION) {
-      return fallbackNews;
+      return gnewsService.getTopNews(category, country);
     }
 
     try {
+      // In development, use NewsAPI
       const response = await axios.get<NewsResponse>(`${NEWS_API_BASE_URL}/top-headlines`, {
         params: {
           apiKey: NEWS_API_KEY,
@@ -50,12 +52,13 @@ export const newsService = {
   },
 
   async searchNews(query: string) {
-    // In production, return fallback data
+    // In production, use Gnews API instead of NewsAPI
     if (IS_PRODUCTION) {
-      return fallbackNews;
+      return gnewsService.searchNews(query);
     }
 
     try {
+      // In development, use NewsAPI
       const response = await axios.get<NewsResponse>(`${NEWS_API_BASE_URL}/everything`, {
         params: {
           apiKey: NEWS_API_KEY,
