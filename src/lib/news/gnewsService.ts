@@ -5,6 +5,9 @@ import { fallbackNews } from './fallback';
 const GNEWS_API_KEY = import.meta.env.VITE_GNEWS_API_KEY;
 const GNEWS_API_BASE_URL = 'https://gnews.io/api/v4';
 
+// Debug information - remove after fixing the issue
+console.log('GNews API key available:', !!GNEWS_API_KEY);
+
 // Interface for Gnews response which is slightly different from NewsAPI
 export interface GNewsArticle {
   title: string;
@@ -47,6 +50,12 @@ const convertToAppFormat = (data: GNewsResponse): any => {
 
 export const gnewsService = {
   async getTopNews(category?: string, country: string = 'us') {
+    // If no API key is available, return fallback data immediately
+    if (!GNEWS_API_KEY) {
+      console.warn('No GNews API key found. Using fallback data.');
+      return fallbackNews;
+    }
+    
     try {
       const response = await axios.get<GNewsResponse>(`${GNEWS_API_BASE_URL}/top-headlines`, {
         params: {
@@ -65,6 +74,12 @@ export const gnewsService = {
   },
 
   async searchNews(query: string) {
+    // If no API key is available, return fallback data immediately
+    if (!GNEWS_API_KEY) {
+      console.warn('No GNews API key found. Using fallback data.');
+      return fallbackNews;
+    }
+    
     try {
       const response = await axios.get<GNewsResponse>(`${GNEWS_API_BASE_URL}/search`, {
         params: {
